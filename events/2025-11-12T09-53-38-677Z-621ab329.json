@@ -1,0 +1,11 @@
+{
+  "id": "621ab329",
+  "created_at": "2025-11-12T09:53:38.677Z",
+  "image_url": "https://raw.githubusercontent.com/pratham-commits/rover-hazard-gallery/main/events/2025-11-12T09-53-38-677Z-621ab329.jpg",
+  "hazard_type": "NONE / NO CLEAR HAZARD",
+  "subclass": "Use this ONLY if you cannot confidently see any hazard.",
+  "severity": "Low",
+  "confidence": 0.95,
+  "explanation": "The image does not show any obvious safety hazards. The floor appears clear and there are no visible electrical, structural, or PPE issues.",
+  "bbox": null
+}
