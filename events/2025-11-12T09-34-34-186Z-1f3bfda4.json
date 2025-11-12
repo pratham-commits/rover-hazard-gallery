@@ -1,0 +1,16 @@
+{
+  "id": "1f3bfda4",
+  "created_at": "2025-11-12T09:34:34.186Z",
+  "image_url": "https://raw.githubusercontent.com/pratham-commits/rover-hazard-gallery/main/events/2025-11-12T09-34-34-186Z-1f3bfda4.jpg",
+  "hazard_type": "PPE / WORKER SAFETY HAZARDS",
+  "subclass": "Person without safety eyewear near cutting, grinding, or sparks",
+  "severity": "Low",
+  "confidence": 0.7,
+  "explanation": "The person is using a laptop without any safety eyewear. While the immediate risk is low in this scenario, it's important to promote a culture of safety and encourage the use of eyewear in potentially hazardous environments, even if the hazard is not immediately apparent. This is a general safety observation.",
+  "bbox": {
+    "x_min": 0,
+    "y_min": 0,
+    "x_max": 0.5,
+    "y_max": 0.5
+  }
+}
