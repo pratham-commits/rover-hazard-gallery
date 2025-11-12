@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillMate Hazard Gallery</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+    h1 {
+      color: white;
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    .subtitle {
+      color: rgba(255,255,255,0.9);
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.1rem;
+    }
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.95);
+      padding: 15px 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      text-align: center;
+      min-width: 120px;
+    }
+    .stat-value { font-size: 2rem; font-weight: bold; color: #667eea; }
+    .stat-label { font-size: 0.9rem; color: #666; margin-top: 5px; }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    }
+    .card-image-container {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      background: #f0f0f0;
+      overflow: hidden;
+    }
+    .card-canvas {
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      display: block;
+    }
+    .card-content { padding: 20px; }
+    .hazard-type { 
+      font-size: 1.3rem; 
+      font-weight: bold; 
+      margin-bottom: 8px; 
+      color: #333; 
+    }
+    .subclass { 
+      font-size: 0.95rem; 
+      color: #666; 
+      margin-bottom: 12px; 
+      font-style: italic; 
+    }
+    .severity {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    .severity-Critical { background: #ff4444; color: white; }
+    .severity-High { background: #ff9800; color: white; }
+    .severity-Medium { background: #ffc107; color: #333; }
+    .severity-Low { background: #4caf50; color: white; }
+    .severity-Unknown { background: #9e9e9e; color: white; }
+    .confidence { font-size: 0.9rem; color: #666; margin-bottom: 10px; }
+    .confidence-bar {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .confidence-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: width 0.5s ease;
+    }
+    .explanation {
+      font-size: 0.9rem;
+      color: #555;
+      line-height: 1.5;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #e0e0e0;
+    }
+    .timestamp { font-size: 0.8rem; color: #999; margin-top: 10px; }
+    .loading { 
+      text-align: center; 
+      color: white; 
+      font-size: 1.3rem; 
+      padding: 50px; 
+    }
+    .error {
+      background: rgba(255,68,68,0.9);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.95);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox-canvas {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 8px;
+      box-shadow: 0 0 50px rgba(255,255,255,0.3);
+    }
+    .lightbox-info {
+      color: white;
+      margin-top: 20px;
+      text-align: center;
+      max-width: 800px;
+      padding: 0 20px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 30px;
+      right: 40px;
+      color: white;
+      font-size: 3rem;
+      cursor: pointer;
+      font-weight: 300;
+      transition: transform 0.2s;
+      z-index: 1001;
+    }
+    .lightbox-close:hover { transform: scale(1.2); }
+    @media (max-width: 768px) {
+      h1 { font-size: 1.8rem; }
+      .gallery { grid-template-columns: 1fr; }
+      .lightbox-close { font-size: 2rem; top: 15px; right: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 SkillMate Hazard Gallery</h1>
+    <p class="subtitle">ESP32-CAM Rover • AI-Powered Hazard Detection with Bounding Boxes</p>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-value" id="totalEvents">-</div>
+        <div class="stat-label">Total Events</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="criticalCount">-</div>
+        <div class="stat-label">Critical</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="highCount">-</div>
+        <div class="stat-label">High</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="mediumCount">-</div>
+        <div class="stat-label">Medium</div>
+      </div>
+    </div>
+
+    <div id="gallery" class="gallery">
+      <div class="loading">🔄 Loading events from GitHub...</div>
+    </div>
+  </div>
+
+  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+    <canvas id="lightboxCanvas" class="lightbox-canvas"></canvas>
+    <div class="lightbox-info" id="lightboxInfo"></div>
+  </div>
+
+  <script>
+    const GITHUB_USER = 'pratham-commits';
+    const GITHUB_REPO = 'rover-hazard-gallery';
+
+    async function loadGallery() {
+      try {
+        console.log('[GALLERY] Fetching events from GitHub...');
+        const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/events`);
+        
+        if (!response.ok) {
+          throw new Error(`GitHub API error: ${response.status}`);
+        }
+
+        const files = await response.json();
+        const jsonFiles = files.filter(f => f.name.endsWith('.json') && !f.name.includes('.gitkeep'));
+        
+        console.log(`[GALLERY] Found ${jsonFiles.length} events`);
+
+        if (jsonFiles.length === 0) {
+          document.getElementById('gallery').innerHTML = 
+            '<div class="error">📭 No hazards detected yet!<br><br>Start analyzing with your ESP32 rover.</div>';
+          return;
+        }
+
+        // Fetch all metadata
+        const events = [];
+        for (const file of jsonFiles) {
+          try {
+            const metaResp = await fetch(file.download_url);
+            const meta = await metaResp.json();
+            events.push(meta);
+          } catch (e) {
+            console.error(`[GALLERY] Failed to load ${file.name}:`, e);
+          }
+        }
+
+        // Sort by timestamp descending
+        events.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+        // Update stats
+        const total = events.length;
+        const critical = events.filter(e => e.severity === 'Critical').length;
+        const high = events.filter(e => e.severity === 'High').length;
+        const medium = events.filter(e => e.severity === 'Medium').length;
+
+        document.getElementById('totalEvents').textContent = total;
+        document.getElementById('criticalCount').textContent = critical;
+        document.getElementById('highCount').textContent = high;
+        document.getElementById('mediumCount').textContent = medium;
+
+        // Render gallery
+        const gallery = document.getElementById('gallery');
+        gallery.innerHTML = '';
+
+        for (const event of events) {
+          const card = createCard(event);
+          gallery.appendChild(card);
+        }
+
+        console.log('[GALLERY] ✅ Loaded successfully');
+
+      } catch (error) {
+        console.error('[GALLERY] Error:', error);
+        document.getElementById('gallery').innerHTML = 
+          `<div class="error">❌ Failed to load events<br><br>${error.message}</div>`;
+      }
+    }
+
+    function createCard(event) {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const confidence = Math.round((event.confidence || 0) * 100);
+      const date = new Date(event.created_at);
+      const dateStr = date.toLocaleString();
+
+      card.innerHTML = `
+        <div class="card-image-container">
+          <canvas class="card-canvas" id="canvas-${event.id}"></canvas>
+        </div>
+        <div class="card-content">
+          <div class="hazard-type">${event.hazard_type || 'Unknown'}</div>
+          <div class="subclass">${event.subclass || 'No subclass'}</div>
+          <span class="severity severity-${event.severity || 'Unknown'}">${event.severity || 'Unknown'}</span>
+          <div class="confidence">Confidence: ${confidence}%</div>
+          <div class="confidence-bar">
+            <div class="confidence-fill" style="width: ${confidence}%"></div>
+          </div>
+          <div class="explanation">${event.explanation || 'No explanation provided.'}</div>
+          <div class="timestamp">📅 ${dateStr}</div>
+        </div>
+      `;
+
+      // Draw image with bbox after DOM insertion
+      setTimeout(() => {
+        const canvas = document.getElementById(`canvas-${event.id}`);
+        if (canvas) {
+          drawImageWithBbox(canvas, event.image_url, event.bbox, () => {
+            canvas.onclick = (e) => {
+              e.stopPropagation();
+              openLightbox(event);
+            };
+          });
+        }
+      }, 50);
+
+      return card;
+    }
+
+    function drawImageWithBbox(canvas, imageUrl, bbox, callback) {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      
+      img.onload = function() {
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // Draw image
+        ctx.drawImage(img, 0, 0);
+
+        // Draw bounding box if exists
+        if (bbox && bbox.x_min !== undefined && bbox.x_min !== null) {
+          const x = bbox.x_min * img.width;
+          const y = bbox.y_min * img.height;
+          const w = (bbox.x_max - bbox.x_min) * img.width;
+          const h = (bbox.y_max - bbox.y_min) * img.height;
+
+          // Red bounding box
+          ctx.strokeStyle = '#ff0000';
+          ctx.lineWidth = 4;
+          ctx.strokeRect(x, y, w, h);
+
+          // Label background
+          const labelText = '⚠️ HAZARD';
+          ctx.font = 'bold 16px Arial';
+          const textWidth = ctx.measureText(labelText).width;
+          
+          ctx.fillStyle = 'rgba(255, 0, 0, 0.85)';
+          ctx.fillRect(x, y - 30, textWidth + 20, 30);
+
+          // Label text
+          ctx.fillStyle = '#ffffff';
+          ctx.fillText(labelText, x + 10, y - 8);
+        }
+
+        if (callback) callback();
+      };
+
+      img.onerror = function() {
+        console.error('[GALLERY] Failed to load image:', imageUrl);
+        const ctx = canvas.getContext('2d');
+        canvas.width = 350;
+        canvas.height = 250;
+        ctx.fillStyle = '#f0f0f0';
+        ctx.fillRect(0, 0, 350, 250);
+        ctx.fillStyle = '#999';
+        ctx.font = '14px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Image not found', 175, 125);
+      };
+
+      img.src = imageUrl;
+    }
+
+    function openLightbox(event) {
+      const canvas = document.getElementById('lightboxCanvas');
+      drawImageWithBbox(canvas, event.image_url, event.bbox);
+
+      const info = document.getElementById('lightboxInfo');
+      const confidence = Math.round((event.confidence || 0) * 100);
+      info.innerHTML = `
+        <h2 style="margin-bottom:10px;">${event.hazard_type}</h2>
+        <p style="font-style:italic;margin-bottom:10px;">${event.subclass}</p>
+        <p style="margin-bottom:10px;"><strong>Severity:</strong> ${event.severity} | <strong>Confidence:</strong> ${confidence}%</p>
+        <p>${event.explanation}</p>
+      `;
+
+      document.getElementById('lightbox').classList.add('active');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    // Load gallery on page load
+    loadGallery();
+
+    // Auto-refresh every 30 seconds
+    setInterval(loadGallery, 30000);
+
+    console.log('[GALLERY] Initialized - Auto-refresh every 30s');
+  </script>
+</body>
+</html>
