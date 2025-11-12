@@ -1,0 +1,16 @@
+{
+  "id": "b1ca62f0",
+  "created_at": "2025-11-12T09:55:44.818Z",
+  "image_url": "https://raw.githubusercontent.com/pratham-commits/rover-hazard-gallery/main/events/2025-11-12T09-55-44-818Z-b1ca62f0.jpg",
+  "hazard_type": "TRIP / FALL / OBSTRUCTION HAZARDS",
+  "subclass": "Uneven or broken floor surface",
+  "severity": "Medium",
+  "confidence": 0.75,
+  "explanation": "The floor surface appears to be uneven or broken, which could cause a person to trip and fall. This is a potential hazard that should be addressed to prevent injuries. The floor is not level and has a change in height.",
+  "bbox": {
+    "x_min": 0,
+    "y_min": 0.38,
+    "x_max": 0.99,
+    "y_max": 0.99
+  }
+}
