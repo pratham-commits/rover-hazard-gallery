@@ -1,0 +1,11 @@
+{
+  "id": "f3123443",
+  "created_at": "2025-11-13T08:35:27.390Z",
+  "image_url": "https://raw.githubusercontent.com/pratham-commits/rover-hazard-gallery/main/events/2025-11-13T08-35-27-390Z-f3123443.jpg",
+  "hazard_type": "None",
+  "subclass": "N/A",
+  "severity": "None",
+  "confidence": 0.95,
+  "explanation": "No electrical hazards are visible in this image.",
+  "bbox": null
+}
